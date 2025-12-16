@@ -141,16 +141,17 @@ nav a:hover { color: var(--accent2); }
   font-weight: 900;
   letter-spacing: 0.03em;
   line-height: 1.1;
-  background: linear-gradient(135deg, #f9e07a 0%, #f6c43d 35%, #d89a00 70%, #fff4c4 100%);
+  color: #ffe7a3; /* fallback */
+  background: linear-gradient(135deg, #ffe9b0 0%, #ffd35f 35%, #f2b600 70%, #fff6cf 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow:
-    0 12px 22px rgba(0,0,0,0.3),
-    0 4px 10px rgba(0,0,0,0.22),
-    0 1px 0 rgba(0,0,0,0.34);
+    0 10px 20px rgba(0,0,0,0.26),
+    0 3px 8px rgba(0,0,0,0.20),
+    0 1px 0 rgba(0,0,0,0.24);
   transform: skew(-4deg) rotate(-1.5deg);
   display: inline-block;
-  -webkit-text-stroke: 0.6px rgba(0,0,0,0.15);
+  -webkit-text-stroke: 0.4px rgba(0,0,0,0.15);
 }
 .hero-copy { max-width: 540px; }
 .hero p { margin: 0 0 12px; color: #dbe5f4; text-shadow: 0 8px 18px rgba(0,0,0,0.32); }
