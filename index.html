@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Reggae+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 </head>
 <body>
   <header>
@@ -28,7 +31,7 @@
   <div class="hero">
     <div class="hero-copy">
       <div class="badge">Sax Quintet</div>
-      <h1 class="brush-title">すこくらのページ（仮）</h1>
+      <h1 class="brush-title">すこくらのページ</h1>
       <p>「すこやかにくらす」を合言葉に、サックスの響きで毎日に少しの健康と彩りを。</p>
       <p class="meta">（注）すこくらはすこやかクラブの略称です</p>
       <div class="hero-actions">
@@ -38,7 +41,7 @@
     <div class="card hero-panel">
       <h3 style="margin-top:0;">お知らせ</h3>
       <ul style="padding-left: 16px; margin: 0; color: #eef2f8;">
-        <li>インフルエンザで暇過ぎて作った</li>
+        <li>編集中</li>
       </ul>
     </div>
   </div>
@@ -138,10 +141,10 @@
         <div style="position: relative; padding-bottom: 56.25%; height: 0;">
           <iframe style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
             src="https://www.youtube.com/embed/QgoNFw8Pjnk"
-            title="クリスマスメドレー・かもめが翔んだ日 - 2025.12 みよし市音楽祭" allowfullscreen></iframe>
+            title="クリスマスメドレー - 2025.12 みよし市音楽祭" allowfullscreen></iframe>
         </div>
         <div style="padding: 12px 0 0;">
-          <strong>クリスマスメドレー・かもめが翔んだ日</strong>
+          <strong>クリスマスメドレー</strong>
           <div class="meta">2025.12 みよし市音楽祭</div>
         </div>
       </div>
@@ -163,7 +166,7 @@
             title="天城越え - 2024.12 みよし市音楽祭" allowfullscreen></iframe>
         </div>
         <div style="padding: 12px 0 0;">
-          <strong>天城越え</strong>
+          <strong>かもめが翔んだ日</strong>
           <div class="meta">2024.12 みよし市音楽祭</div>
         </div>
       </div>
@@ -171,11 +174,11 @@
         <div style="position: relative; padding-bottom: 56.25%; height: 0;">
           <iframe style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
             src="https://www.youtube.com/embed/gEKC7h_XNs0"
-            title="演奏動画" allowfullscreen></iframe>
+            title="天城越え - 2024.12 みよし市音楽祭" allowfullscreen></iframe>
         </div>
         <div style="padding: 12px 0 0;">
-          <strong>演奏動画</strong>
-          <div class="meta">YouTube</div>
+          <strong>天城越え</strong>
+          <div class="meta">2024.12 みよし市音楽祭</div>
         </div>
       </div>
     </div>
@@ -184,9 +187,7 @@
   <section id="contact">
     <h2>お問い合わせ</h2>
     <div class="card">
-      <p>出演のご相談はメールでご連絡ください。</p>
-      <p><a href="mailto:info@example.com">info@example.com</a></p>
-      <p class="meta">※後で正式な窓口メールアドレスに差し替えてください。</p>
+      <p>編集中</p>
     </div>
   </section>
 
@@ -194,6 +195,7 @@
     <div>© すこやかクラブ（すこくら） | Sax Quintet</div>
   </footer>
 
+  <script src="./firebase-config.js"></script>
   <script src="./script.js"></script>
 </body>
 </html>

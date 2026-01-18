@@ -1,6 +1,6 @@
 const form = document.getElementById('scheduleForm');
 const entriesEl = document.getElementById('entries');
-const STORAGE_KEY = 'sukoyaka_schedule_entries_v4';
+const SCHEDULE_PATH = 'schedules';
 
 const parseDateTime = (dateStr, timeStr) => {
   if (!dateStr) return null;
@@ -13,52 +13,80 @@ const parseDateTime = (dateStr, timeStr) => {
 const cleanupExpired = (list) => {
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const filtered = list.filter((item) => {
+  return list.filter((item) => {
     const dt = parseDateTime(item.date, item.time);
-    if (!dt) return false; // 無効データは落とす
+    if (!dt) return false;
     return dt >= todayStart;
   });
-  if (filtered.length !== list.length) {
-    saveEntries(filtered);
+};
+
+// Firebaseからデータを読み込み
+const loadEntries = (callback) => {
+  const database = window.database;
+  if (!database) {
+    console.error('Firebaseが初期化されていません。firebase-config.jsを設定してください。');
+    callback([]);
+    return;
   }
-  return filtered;
+  
+  database.ref(SCHEDULE_PATH).once('value', (snapshot) => {
+    const data = snapshot.val();
+    const list = data ? Object.keys(data).map(key => ({
+      id: key,
+      ...data[key]
+    })) : [];
+    const filtered = cleanupExpired(list);
+    callback(filtered);
+  });
 };
 
-const loadEntries = () => {
-  try {
-    const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    // 旧バージョンのデータにも対応し、必要なフィールドだけ拾う
-    return Array.isArray(raw)
-      ? raw.map((item) => ({
-          date: item.date || '',
-          time: item.time || '',
-          place: item.place || '',
-          kind: item.kind || '練習',
-          memo: item.memo || '',
-          createdAt: item.createdAt || Date.now(),
-        }))
-      : [];
-  } catch (e) {
-    console.warn('Failed to parse saved entries', e);
-    return [];
+// Firebaseにデータを保存
+const saveEntry = (entry) => {
+  const database = window.database;
+  if (!database) {
+    console.error('Firebaseが初期化されていません。');
+    return;
   }
+  const newEntryRef = database.ref(SCHEDULE_PATH).push();
+  newEntryRef.set({
+    date: entry.date,
+    time: entry.time,
+    place: entry.place,
+    kind: entry.kind || '練習',
+    memo: entry.memo || '',
+    createdAt: Date.now()
+  });
 };
 
-const saveEntries = (list) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+// Firebaseからデータを削除
+const deleteEntry = (id) => {
+  const database = window.database;
+  if (!database) {
+    console.error('Firebaseが初期化されていません。');
+    return;
+  }
+  database.ref(`${SCHEDULE_PATH}/${id}`).remove();
 };
 
-const render = () => {
-  const list = cleanupExpired(loadEntries());
+const render = (list) => {
   entriesEl.innerHTML = '';
-  if (!list.length) {
+  if (!list || !list.length) {
     const empty = document.createElement('div');
     empty.className = 'meta';
     empty.textContent = 'まだ入力がありません。';
     entriesEl.appendChild(empty);
     return;
   }
-  list.forEach((item, index) => {
+  
+  // 日付順にソート（新しい順）
+  const sorted = [...list].sort((a, b) => {
+    const dtA = parseDateTime(a.date, a.time);
+    const dtB = parseDateTime(b.date, b.time);
+    if (!dtA || !dtB) return 0;
+    return dtA - dtB;
+  });
+  
+  sorted.forEach((item) => {
     const box = document.createElement('div');
     box.className = 'entry';
 
@@ -75,10 +103,9 @@ const render = () => {
     del.textContent = '×';
     del.title = '削除';
     del.onclick = () => {
-      const next = loadEntries();
-      next.splice(index, 1);
-      saveEntries(next);
-      render();
+      if (confirm('この予定を削除しますか？')) {
+        deleteEntry(item.id);
+      }
     };
 
     const meta = document.createElement('div');
@@ -100,6 +127,7 @@ const render = () => {
   });
 };
 
+// フォーム送信処理
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   const date = document.getElementById('date').value;
@@ -108,15 +136,28 @@ form.addEventListener('submit', (e) => {
   const kind = document.getElementById('kind').value;
   const memo = document.getElementById('memo').value.trim();
   if (!date) return;
-  const list = loadEntries();
-  list.unshift({ date, time, place, kind, memo, createdAt: Date.now() });
-  saveEntries(list);
+  
+  saveEntry({ date, time, place, kind, memo });
   form.reset();
   document.getElementById('time').value = '19:00';
   document.getElementById('kind').value = '練習';
-  render();
 });
 
-render();
-
-
+// 初期読み込み
+if (typeof window.database !== 'undefined') {
+  loadEntries(render);
+  
+  // リアルタイム更新を監視
+  window.database.ref(SCHEDULE_PATH).on('value', (snapshot) => {
+    const data = snapshot.val();
+    const list = data ? Object.keys(data).map(key => ({
+      id: key,
+      ...data[key]
+    })) : [];
+    const filtered = cleanupExpired(list);
+    render(filtered);
+  });
+} else {
+  console.warn('Firebaseが初期化されていません。firebase-config.jsを確認してください。');
+  entriesEl.innerHTML = '<div class="meta">Firebaseの設定が必要です。firebase-config.jsを設定してください。</div>';
+}
