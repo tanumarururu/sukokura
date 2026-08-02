@@ -100,14 +100,24 @@ const renderNextSukokura = (list) => {
   box.style.boxShadow = 'none';
 
   const header = document.createElement('header');
-  
-  // 日時を大きめの黒字で表示
+  header.style.display = 'flex';
+  header.style.alignItems = 'center';
+  header.style.justifyContent = 'space-between';
+  header.style.gap = '12px';
+
+  const leftGroup = document.createElement('div');
+  leftGroup.style.display = 'flex';
+  leftGroup.style.alignItems = 'center';
+  leftGroup.style.gap = '12px';
+  leftGroup.style.flexWrap = 'wrap';
+
   const title = document.createElement('h4');
   const timeStr = item.time ? ` ${item.time}` : '';
   title.textContent = `${item.date || '日付未設定'}${timeStr}`;
   title.style.color = '#0f172a';
   title.style.fontSize = '18px';
   title.style.fontWeight = '800';
+  title.style.margin = '0';
 
   const chip = document.createElement('span');
   chip.className = 'chip';
@@ -115,10 +125,12 @@ const renderNextSukokura = (list) => {
   if (item.kind === '本番') {
     chip.style.background = '#e11d48';
     chip.style.color = '#ffffff';
+    chip.style.border = 'none';
   }
 
-  header.appendChild(title);
-  header.appendChild(chip);
+  leftGroup.appendChild(title);
+  leftGroup.appendChild(chip);
+  header.appendChild(leftGroup);
   box.appendChild(header);
 
   if (item.memo) {
@@ -158,14 +170,24 @@ const render = (list) => {
     box.className = 'entry';
 
     const header = document.createElement('header');
-    
-    // 日付・時間をメインの大きな黒字で見やすく表示
+    header.style.display = 'flex';
+    header.style.alignItems = 'center';
+    header.style.justifyContent = 'space-between';
+    header.style.gap = '12px';
+
+    const leftGroup = document.createElement('div');
+    leftGroup.style.display = 'flex';
+    leftGroup.style.alignItems = 'center';
+    leftGroup.style.gap = '12px';
+    leftGroup.style.flexWrap = 'wrap';
+
     const title = document.createElement('h4');
     const timeStr = item.time ? ` ${item.time}` : '';
     title.textContent = `${item.date || '日付未設定'}${timeStr}`;
     title.style.color = '#0f172a';
-    title.style.fontSize = '17px';
-    title.style.fontWeight = '700';
+    title.style.fontSize = '18px';
+    title.style.fontWeight = '800';
+    title.style.margin = '0';
 
     const chip = document.createElement('span');
     chip.className = 'chip';
@@ -173,6 +195,7 @@ const render = (list) => {
     if (item.kind === '本番') {
       chip.style.background = '#e11d48';
       chip.style.color = '#ffffff';
+      chip.style.border = 'none';
     }
 
     const del = document.createElement('button');
@@ -185,8 +208,9 @@ const render = (list) => {
       }
     };
 
-    header.appendChild(title);
-    header.appendChild(chip);
+    leftGroup.appendChild(title);
+    leftGroup.appendChild(chip);
+    header.appendChild(leftGroup);
     header.appendChild(del);
     box.appendChild(header);
 

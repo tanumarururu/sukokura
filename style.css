@@ -326,20 +326,26 @@ section#schedule .card {
   padding: 0;
   margin: 0;
   box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 .entry h4 {
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 800;
 }
-.entry .meta { font-size: 12px; }
+.entry .meta { font-size: 13px; }
 .entry .chip {
-  display: inline-block;
-  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 14px;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: #eef5fb;
   color: #1d4e89;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 .entry .delete {
