@@ -215,7 +215,7 @@ const render = (list) => {
       const memo = document.createElement('span');
       memo.className = 'meta';
       memo.style.color = '#475569';
-      memo.style.fontSize = '14px';
+      memo.style.fontSize = '15px';
       memo.style.fontWeight = '500';
       memo.textContent = item.memo;
       leftGroup.appendChild(memo);

@@ -349,16 +349,16 @@ section#schedule .card {
   font-weight: 700;
 }
 .entry .delete {
-  position: absolute;
-  right: 0;
-  top: 0;
+  position: static;
+  margin-left: auto;
   background: none;
   border: none;
   color: #ef4444;
   font-weight: 800;
+  font-size: 16px;
   cursor: pointer;
   box-shadow: none;
-  padding: 4px 6px;
+  padding: 4px 8px;
 }
 .video-grid {
   display: grid;
