@@ -61,7 +61,37 @@ const deleteEntry = async (id) => {
   }
 };
 
+const renderNextPractice = (list) => {
+  const nextPracticeEl = document.getElementById('next-practice-info');
+  if (!nextPracticeEl) return;
+
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const upcomingPractices = (list || [])
+    .filter((item) => (item.kind === '練習' || !item.kind))
+    .filter((item) => {
+      const dt = parseDateTime(item.date, item.time);
+      return dt && dt >= todayStart;
+    })
+    .sort((a, b) => parseDateTime(a.date, a.time) - parseDateTime(b.date, b.time));
+
+  if (!upcomingPractices.length) {
+    nextPracticeEl.innerHTML = '<div style="color:#94a3b8; font-size: 14px;">直近の練習予定はありません</div>';
+    return;
+  }
+
+  const next = upcomingPractices[0];
+  const timeStr = next.time ? ` ${next.time}` : '';
+  nextPracticeEl.innerHTML = `
+    <div style="font-weight: 700; font-size: 16px; color: #fff;">🗓️ ${next.date}${timeStr}</div>
+    <div style="margin-top: 4px; font-size: 14px; color: #cbd5e1;">📍 ${next.place || '場所未定'}</div>
+    ${next.memo ? `<div style="margin-top: 4px; font-size: 13px; color: #94a3b8;">💬 ${next.memo}</div>` : ''}
+  `;
+};
+
 const render = (list) => {
+  renderNextPractice(list);
   entriesEl.innerHTML = '';
   if (!list || !list.length) {
     const empty = document.createElement('div');

@@ -45,6 +45,14 @@
       <ul style="padding-left: 16px; margin: 0; color: #eef2f8;">
         <li>編集中</li>
       </ul>
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.15);">
+        <h3 style="margin:0 0 8px 0; color: #f4b400; font-size: 18px; display:flex; align-items:center; gap:6px;">
+          <span>🎷</span> 次の練習
+        </h3>
+        <div id="next-practice-info" style="font-size: 15px; color: #eef2f8; background: rgba(255,255,255,0.06); padding: 12px; border-radius: 8px;">
+          <div style="color: #94a3b8; font-size: 13px;">読み込み中...</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -134,7 +142,7 @@
           <label for="memo">備考（任意）</label>
           <textarea id="memo" placeholder="持ち物・集合時間・曲目など"></textarea>
         </div>
-        <button type="submit">追加する（ローカル保存）</button>
+        <button type="submit">スケジュールを追加</button>
       </form>
       <div class="entries" id="entries"></div>
     </div>
