@@ -128,21 +128,21 @@ const renderNextSukokura = (list) => {
     chip.style.border = 'none';
   }
 
-  leftGroup.appendChild(title);
   leftGroup.appendChild(chip);
-  header.appendChild(leftGroup);
-  box.appendChild(header);
+  leftGroup.appendChild(title);
 
   if (item.memo) {
-    const memo = document.createElement('div');
+    const memo = document.createElement('span');
     memo.className = 'meta';
     memo.style.color = '#475569';
-    memo.style.marginTop = '8px';
     memo.style.fontSize = '14px';
+    memo.style.fontWeight = '500';
     memo.textContent = item.memo;
-    box.appendChild(memo);
+    leftGroup.appendChild(memo);
   }
 
+  header.appendChild(leftGroup);
+  box.appendChild(header);
   container.appendChild(box);
 };
 
@@ -208,21 +208,22 @@ const render = (list) => {
       }
     };
 
-    leftGroup.appendChild(title);
     leftGroup.appendChild(chip);
+    leftGroup.appendChild(title);
+
+    if (item.memo) {
+      const memo = document.createElement('span');
+      memo.className = 'meta';
+      memo.style.color = '#475569';
+      memo.style.fontSize = '14px';
+      memo.style.fontWeight = '500';
+      memo.textContent = item.memo;
+      leftGroup.appendChild(memo);
+    }
+
     header.appendChild(leftGroup);
     header.appendChild(del);
     box.appendChild(header);
-
-    if (item.memo) {
-      const memo = document.createElement('div');
-      memo.className = 'meta';
-      memo.style.color = '#475569';
-      memo.style.marginTop = '6px';
-      memo.style.fontSize = '14px';
-      memo.textContent = item.memo;
-      box.appendChild(memo);
-    }
     entriesEl.appendChild(box);
   });
 };
