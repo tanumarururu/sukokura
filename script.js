@@ -82,7 +82,7 @@ const renderNextSukokura = (list) => {
     });
 
   if (!upcomingList.length) {
-    container.innerHTML = '<div style="color:#94a3b8; font-size: 14px;">予定されている「すこくら」はありません</div>';
+    container.innerHTML = '<div style="color:#64748b; font-size: 14px;">予定されている「すこくら」はありません</div>';
     return;
   }
 
@@ -95,14 +95,16 @@ const renderNextSukokura = (list) => {
   const box = document.createElement('div');
   box.className = 'entry';
   box.style.margin = '0';
-  box.style.background = 'rgba(255, 255, 255, 0.08)';
-  box.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+  box.style.background = '#f8fafc';
+  box.style.border = '1px solid #e2e8f0';
   box.style.boxShadow = 'none';
 
   const header = document.createElement('header');
   const title = document.createElement('h4');
   title.textContent = item.place || '予定';
-  title.style.color = '#ffffff';
+  title.style.color = '#0f172a'; // くっきり黒文字
+  title.style.fontSize = '16px';
+  title.style.fontWeight = '700';
 
   const chip = document.createElement('span');
   chip.className = 'chip';
@@ -114,9 +116,12 @@ const renderNextSukokura = (list) => {
 
   const meta = document.createElement('div');
   meta.className = 'meta';
-  meta.style.color = '#cbd5e1';
+  meta.style.color = '#334155'; // くっきり読める黒/ダークグレー文字
+  meta.style.fontSize = '14px';
+  meta.style.fontWeight = '600';
+  meta.style.marginTop = '6px';
   const timeStr = item.time ? ` ${item.time}` : '';
-  meta.textContent = `📅 ${item.date || '日付未設定'}${timeStr}`;
+  meta.textContent = `${item.date || '日付未設定'}${timeStr}`;
 
   header.appendChild(title);
   header.appendChild(chip);
@@ -126,9 +131,9 @@ const renderNextSukokura = (list) => {
   if (item.memo) {
     const memo = document.createElement('div');
     memo.className = 'meta';
-    memo.style.color = '#94a3b8';
+    memo.style.color = '#475569';
     memo.style.marginTop = '4px';
-    memo.textContent = `💬 ${item.memo}`;
+    memo.textContent = item.memo;
     box.appendChild(memo);
   }
 
