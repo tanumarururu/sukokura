@@ -100,11 +100,14 @@ const renderNextSukokura = (list) => {
   box.style.boxShadow = 'none';
 
   const header = document.createElement('header');
+  
+  // 日時を大きめの黒字で表示
   const title = document.createElement('h4');
-  title.textContent = item.place || '予定';
-  title.style.color = '#0f172a'; // くっきり黒文字
-  title.style.fontSize = '16px';
-  title.style.fontWeight = '700';
+  const timeStr = item.time ? ` ${item.time}` : '';
+  title.textContent = `${item.date || '日付未設定'}${timeStr}`;
+  title.style.color = '#0f172a';
+  title.style.fontSize = '18px';
+  title.style.fontWeight = '800';
 
   const chip = document.createElement('span');
   chip.className = 'chip';
@@ -114,25 +117,16 @@ const renderNextSukokura = (list) => {
     chip.style.color = '#ffffff';
   }
 
-  const meta = document.createElement('div');
-  meta.className = 'meta';
-  meta.style.color = '#334155'; // くっきり読める黒/ダークグレー文字
-  meta.style.fontSize = '14px';
-  meta.style.fontWeight = '600';
-  meta.style.marginTop = '6px';
-  const timeStr = item.time ? ` ${item.time}` : '';
-  meta.textContent = `${item.date || '日付未設定'}${timeStr}`;
-
   header.appendChild(title);
   header.appendChild(chip);
   box.appendChild(header);
-  box.appendChild(meta);
 
   if (item.memo) {
     const memo = document.createElement('div');
     memo.className = 'meta';
     memo.style.color = '#475569';
-    memo.style.marginTop = '4px';
+    memo.style.marginTop = '8px';
+    memo.style.fontSize = '14px';
     memo.textContent = item.memo;
     box.appendChild(memo);
   }
@@ -164,12 +158,22 @@ const render = (list) => {
     box.className = 'entry';
 
     const header = document.createElement('header');
+    
+    // 日付・時間をメインの大きな黒字で見やすく表示
     const title = document.createElement('h4');
-    title.textContent = item.place || '予定';
+    const timeStr = item.time ? ` ${item.time}` : '';
+    title.textContent = `${item.date || '日付未設定'}${timeStr}`;
+    title.style.color = '#0f172a';
+    title.style.fontSize = '17px';
+    title.style.fontWeight = '700';
 
     const chip = document.createElement('span');
     chip.className = 'chip';
     chip.textContent = item.kind || '練習';
+    if (item.kind === '本番') {
+      chip.style.background = '#e11d48';
+      chip.style.color = '#ffffff';
+    }
 
     const del = document.createElement('button');
     del.className = 'delete';
@@ -181,21 +185,20 @@ const render = (list) => {
       }
     };
 
-    const meta = document.createElement('div');
-    meta.className = 'meta';
-    const timeStr = item.time ? ` ${item.time}` : '';
-    meta.textContent = `${item.date || '日付未設定'}${timeStr}`;
-
-    const memo = document.createElement('div');
-    memo.className = 'meta';
-    memo.textContent = item.memo || '';
-
     header.appendChild(title);
     header.appendChild(chip);
     header.appendChild(del);
     box.appendChild(header);
-    box.appendChild(meta);
-    if (item.memo) box.appendChild(memo);
+
+    if (item.memo) {
+      const memo = document.createElement('div');
+      memo.className = 'meta';
+      memo.style.color = '#475569';
+      memo.style.marginTop = '6px';
+      memo.style.fontSize = '14px';
+      memo.textContent = item.memo;
+      box.appendChild(memo);
+    }
     entriesEl.appendChild(box);
   });
 };
@@ -205,12 +208,11 @@ form.addEventListener('submit', (e) => {
   e.preventDefault();
   const date = document.getElementById('date').value;
   const time = document.getElementById('time').value;
-  const place = document.getElementById('place').value.trim();
   const kind = document.getElementById('kind').value;
   const memo = document.getElementById('memo').value.trim();
-  if (!date || !place) return;
+  if (!date) return;
   
-  saveEntry({ date, time, place, kind, memo });
+  saveEntry({ date, time, kind, memo });
   form.reset();
   document.getElementById('time').value = '19:00';
   document.getElementById('kind').value = '練習';

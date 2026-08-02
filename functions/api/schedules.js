@@ -25,8 +25,8 @@ export async function onRequestPost(context) {
     const { request, env } = context;
     const data = await request.json();
 
-    if (!data.date || !data.place) {
-      return new Response(JSON.stringify({ error: "日付と場所は必須です。" }), {
+    if (!data.date) {
+      return new Response(JSON.stringify({ error: "日付は必須です。" }), {
         status: 400,
         headers: { "Content-Type": "application/json; charset=utf-8" },
       });
@@ -34,7 +34,7 @@ export async function onRequestPost(context) {
 
     const date = data.date;
     const time = data.time || "19:00";
-    const place = data.place;
+    const place = data.place || "";
     const kind = data.kind || "練習";
     const memo = data.memo || "";
     const createdAt = Date.now();
