@@ -1,6 +1,5 @@
 const form = document.getElementById('scheduleForm');
 const entriesEl = document.getElementById('entries');
-const SCHEDULE_PATH = 'schedules';
 
 const parseDateTime = (dateStr, timeStr) => {
   if (!dateStr) return null;
@@ -20,52 +19,46 @@ const cleanupExpired = (list) => {
   });
 };
 
-// Firebaseからデータを読み込み
-const loadEntries = (callback) => {
-  const database = window.database;
-  if (!database) {
-    console.error('Firebaseが初期化されていません。firebase-config.jsを設定してください。');
-    callback([]);
-    return;
+// APIからデータを取得
+const fetchSchedules = async () => {
+  try {
+    const res = await fetch('/api/schedules');
+    if (!res.ok) throw new Error('データ取得に失敗しました');
+    const data = await res.json();
+    const filtered = cleanupExpired(data);
+    render(filtered);
+  } catch (err) {
+    console.error(err);
+    entriesEl.innerHTML = `<div class="meta">予定の読み込みに失敗しました (${err.message})</div>`;
   }
-  
-  database.ref(SCHEDULE_PATH).once('value', (snapshot) => {
-    const data = snapshot.val();
-    const list = data ? Object.keys(data).map(key => ({
-      id: key,
-      ...data[key]
-    })) : [];
-    const filtered = cleanupExpired(list);
-    callback(filtered);
-  });
 };
 
-// Firebaseにデータを保存
-const saveEntry = (entry) => {
-  const database = window.database;
-  if (!database) {
-    console.error('Firebaseが初期化されていません。');
-    return;
+// APIにデータ保存
+const saveEntry = async (entry) => {
+  try {
+    const res = await fetch('/api/schedules', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry),
+    });
+    if (!res.ok) throw new Error('保存に失敗しました');
+    await fetchSchedules();
+  } catch (err) {
+    alert(`エラー: ${err.message}`);
   }
-  const newEntryRef = database.ref(SCHEDULE_PATH).push();
-  newEntryRef.set({
-    date: entry.date,
-    time: entry.time,
-    place: entry.place,
-    kind: entry.kind || '練習',
-    memo: entry.memo || '',
-    createdAt: Date.now()
-  });
 };
 
-// Firebaseからデータを削除
-const deleteEntry = (id) => {
-  const database = window.database;
-  if (!database) {
-    console.error('Firebaseが初期化されていません。');
-    return;
+// APIからデータ削除
+const deleteEntry = async (id) => {
+  try {
+    const res = await fetch(`/api/schedules?id=${id}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('削除に失敗しました');
+    await fetchSchedules();
+  } catch (err) {
+    alert(`エラー: ${err.message}`);
   }
-  database.ref(`${SCHEDULE_PATH}/${id}`).remove();
 };
 
 const render = (list) => {
@@ -78,7 +71,7 @@ const render = (list) => {
     return;
   }
   
-  // 日付順にソート（新しい順）
+  // 日付順にソート（昇順）
   const sorted = [...list].sort((a, b) => {
     const dtA = parseDateTime(a.date, a.time);
     const dtB = parseDateTime(b.date, b.time);
@@ -135,7 +128,7 @@ form.addEventListener('submit', (e) => {
   const place = document.getElementById('place').value.trim();
   const kind = document.getElementById('kind').value;
   const memo = document.getElementById('memo').value.trim();
-  if (!date) return;
+  if (!date || !place) return;
   
   saveEntry({ date, time, place, kind, memo });
   form.reset();
@@ -144,20 +137,4 @@ form.addEventListener('submit', (e) => {
 });
 
 // 初期読み込み
-if (typeof window.database !== 'undefined') {
-  loadEntries(render);
-  
-  // リアルタイム更新を監視
-  window.database.ref(SCHEDULE_PATH).on('value', (snapshot) => {
-    const data = snapshot.val();
-    const list = data ? Object.keys(data).map(key => ({
-      id: key,
-      ...data[key]
-    })) : [];
-    const filtered = cleanupExpired(list);
-    render(filtered);
-  });
-} else {
-  console.warn('Firebaseが初期化されていません。firebase-config.jsを確認してください。');
-  entriesEl.innerHTML = '<div class="meta">Firebaseの設定が必要です。firebase-config.jsを設定してください。</div>';
-}
+fetchSchedules();

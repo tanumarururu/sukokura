@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS schedules (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT NOT NULL,
+  time TEXT,
+  place TEXT NOT NULL,
+  kind TEXT NOT NULL DEFAULT '練習',
+  memo TEXT,
+  created_at INTEGER NOT NULL
+);

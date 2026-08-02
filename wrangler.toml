@@ -1,0 +1,8 @@
+name = "sukokura"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sukokura-db"
+database_id = "91ee5fe9-1954-4eee-a29c-7d4dc17c9b65"
