@@ -61,37 +61,82 @@ const deleteEntry = async (id) => {
   }
 };
 
-const renderNextPractice = (list) => {
-  const nextPracticeEl = document.getElementById('next-practice-info');
-  if (!nextPracticeEl) return;
+const renderNextSukokura = (list) => {
+  const container = document.getElementById('next-sukokura-container');
+  if (!container) return;
 
   const now = new Date();
+  // 今日の00:00:00を基準（Today）
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const upcomingPractices = (list || [])
-    .filter((item) => (item.kind === '練習' || !item.kind))
+  // Todayより前の過去の日は完全に除外
+  const upcomingList = (list || [])
     .filter((item) => {
       const dt = parseDateTime(item.date, item.time);
       return dt && dt >= todayStart;
     })
-    .sort((a, b) => parseDateTime(a.date, a.time) - parseDateTime(b.date, b.time));
+    .sort((a, b) => {
+      const dtA = parseDateTime(a.date, a.time);
+      const dtB = parseDateTime(b.date, b.time);
+      return dtA - dtB;
+    });
 
-  if (!upcomingPractices.length) {
-    nextPracticeEl.innerHTML = '<div style="color:#94a3b8; font-size: 14px;">直近の練習予定はありません</div>';
+  if (!upcomingList.length) {
+    container.innerHTML = '<div style="color:#94a3b8; font-size: 14px;">予定されている「すこくら」はありません</div>';
     return;
   }
 
-  const next = upcomingPractices[0];
-  const timeStr = next.time ? ` ${next.time}` : '';
-  nextPracticeEl.innerHTML = `
-    <div style="font-weight: 700; font-size: 16px; color: #fff;">🗓️ ${next.date}${timeStr}</div>
-    <div style="margin-top: 4px; font-size: 14px; color: #cbd5e1;">📍 ${next.place || '場所未定'}</div>
-    ${next.memo ? `<div style="margin-top: 4px; font-size: 13px; color: #94a3b8;">💬 ${next.memo}</div>` : ''}
-  `;
+  // 直近の1件を取得
+  const item = upcomingList[0];
+
+  container.innerHTML = '';
+  
+  // スケジュール一覧の「entry」タイルと同じクラス・構造で作成
+  const box = document.createElement('div');
+  box.className = 'entry';
+  box.style.margin = '0';
+  box.style.background = 'rgba(255, 255, 255, 0.08)';
+  box.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+  box.style.boxShadow = 'none';
+
+  const header = document.createElement('header');
+  const title = document.createElement('h4');
+  title.textContent = item.place || '予定';
+  title.style.color = '#ffffff';
+
+  const chip = document.createElement('span');
+  chip.className = 'chip';
+  chip.textContent = item.kind || '練習';
+  if (item.kind === '本番') {
+    chip.style.background = '#e11d48';
+    chip.style.color = '#ffffff';
+  }
+
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  meta.style.color = '#cbd5e1';
+  const timeStr = item.time ? ` ${item.time}` : '';
+  meta.textContent = `📅 ${item.date || '日付未設定'}${timeStr}`;
+
+  header.appendChild(title);
+  header.appendChild(chip);
+  box.appendChild(header);
+  box.appendChild(meta);
+
+  if (item.memo) {
+    const memo = document.createElement('div');
+    memo.className = 'meta';
+    memo.style.color = '#94a3b8';
+    memo.style.marginTop = '4px';
+    memo.textContent = `💬 ${item.memo}`;
+    box.appendChild(memo);
+  }
+
+  container.appendChild(box);
 };
 
 const render = (list) => {
-  renderNextPractice(list);
+  renderNextSukokura(list);
   entriesEl.innerHTML = '';
   if (!list || !list.length) {
     const empty = document.createElement('div');
